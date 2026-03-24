@@ -1,4 +1,4 @@
-frappe.ui.form.on("Sales Order", {
+frappe.ui.form.on("Sales Invoice", {
 
     customer: function(frm) {
         update_rates(frm);
@@ -26,7 +26,7 @@ frappe.ui.form.on("Sales Order", {
 });
 
 
-frappe.ui.form.on("Sales Order Item", {
+frappe.ui.form.on("Sales Invoice Item", {
 
     item_code: function(frm) {
         update_rates(frm);
@@ -40,7 +40,6 @@ frappe.ui.form.on("Sales Order Item", {
 
         let row = locals[cdt][cdn];
 
-        // If unchecked → recalc
         if (!row.custom_ignore_pricing) {
             update_rates(frm);
         }
@@ -104,9 +103,9 @@ function update_rates(frm) {
             }
 
             let found = false;
-            let rate = row.rate;
+            let rate = row.custom_custom_rate || row.rate;
 
-            // Gross Weight
+            // 1️⃣ Gross Weight
             if (!frm.doc.custom_ignore_gross_weight_pricing &&
                 gross_rates[row.item_code]) {
 
@@ -114,7 +113,7 @@ function update_rates(frm) {
                 found = true;
             }
 
-            // Customer Pricing
+            // 2️⃣ Customer Pricing
             else if (!frm.doc.custom_ignore_customer_pricing) {
 
                 pricing.forEach(function(price_row) {
@@ -141,10 +140,19 @@ function update_rates(frm) {
 
             if (found) {
 
+                // ✅ YOUR CHANGE (main field)
                 frappe.model.set_value(
                     row.doctype,
                     row.name,
                     "custom_custom_rate",
+                    rate
+                );
+
+                // ✅ KEEP ERPNext CALCULATION WORKING
+                frappe.model.set_value(
+                    row.doctype,
+                    row.name,
+                    "rate",
                     rate
                 );
             }

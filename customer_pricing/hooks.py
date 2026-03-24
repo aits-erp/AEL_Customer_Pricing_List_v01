@@ -6,7 +6,6 @@ app_email = "umer@aitsind.com"
 app_license = "mit"
 
 
-
 fixtures = [
     {
         "dt": "Custom Field",
@@ -255,9 +254,13 @@ fixtures = [
 doc_events = {
     "Sales Order": {
         "before_save": "customer_pricing.api.apply_customer_pricing"
+    },
+    "Sales Invoice": {
+        "before_save": "customer_pricing.api.apply_customer_pricing"
     }
 }
 doctype_js = {
     "Sales Order": "public/js/sales_order.js",
+    "Sales Invoice": "public/js/sales_invoice.js",
     "Gross Weight": "public/js/customer_gross_weight_pricing.js"
 }

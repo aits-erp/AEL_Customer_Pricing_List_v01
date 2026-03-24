@@ -104,8 +104,7 @@ def apply_customer_pricing(doc, method):
                             rate = price_row.usd_min_cbm or 0
                         else:
                             rate = (
-                                (price_row.usd_per_cbm or 0)
-                                * total_cbm
+                                (price_row.usd_per_cbm or 0) * total_cbm
                             )
 
                     found = True
@@ -113,6 +112,7 @@ def apply_customer_pricing(doc, method):
 
         # Only overwrite if rule found
         if found:
+            item_row.custom_custom_rate = rate
             item_row.rate = rate
 
     doc.calculate_taxes_and_totals()
